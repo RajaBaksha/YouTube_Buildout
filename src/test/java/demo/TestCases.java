@@ -17,11 +17,14 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.logging.Level;
 
 import demo.utils.ExcelDataProvider;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 import demo.wrappers.Wrappers;
+
+import org.testng.Assert;
 
 public class TestCases extends ExcelDataProvider{ // Lets us read the data
         ChromeDriver driver;
@@ -36,6 +39,71 @@ public class TestCases extends ExcelDataProvider{ // Lets us read the data
          * Do not change the provided methods unless necessary, they will help in
          * automation and assessment
          */
+        @Test(enabled = true)
+        public void testCase01() throws InterruptedException
+        {
+                Wrappers wp = new Wrappers(driver);
+                
+                wp.NavigateToUrl();
+                wp.clickOnElement();
+                String txt = wp.getAboutMessage();
+                System.out.println(txt);
+
+        }
+
+        @Test(enabled = true)
+        public void testCase02() throws InterruptedException{
+                Wrappers wp = new Wrappers(driver);
+                SoftAssert sa = new SoftAssert();
+
+                wp.NavigateToUrl();
+                wp.clickOnElement();
+                wp.selectExploreOption("Movies");
+                String[] movie = wp.verifyTopSellingMovies();
+                System.out.println(movie[0]);
+                System.out.println(movie[1]);
+
+                sa.assertTrue(movie[0].contains("U") || movie[0].contains("A") || movie[0].contains("U/A") || movie[0].contains("R"));
+                sa.assertTrue(movie[1].contains("Animation") || movie[1].contains("Comedy") || movie[1].contains("Drama"));
+                sa.assertAll();
+
+        }
+
+        @Test(enabled = true)
+        public void testCase03() throws InterruptedException{
+                
+                Wrappers wp = new Wrappers(driver);
+                SoftAssert sa = new SoftAssert();
+
+                wp.NavigateToUrl();
+                wp.clickOnElement();
+                wp.selectExploreOption("Music");
+                wp.verifyMusic();
+                String title = wp.songTitle;
+                int likes = wp.songLikes;
+                System.out.println("song Title: "+title);
+                System.out.println("Song Likes: "+likes);
+
+                sa.assertTrue(likes <= 50 && likes > 0);
+                sa.assertAll();
+                
+        }
+
+        @Test(enabled = true)
+        public void testCase04() throws InterruptedException{
+
+                Wrappers wp = new Wrappers(driver);
+                
+                wp.NavigateToUrl();
+                wp.clickOnElement();
+                wp.selectExploreOption("News");
+                wp.verifyLatestNews();
+
+        }
+
+
+
+        
         @BeforeTest
         public void startBrowser() {
                 System.setProperty("java.util.logging.config.file", "logging.properties");
@@ -58,10 +126,10 @@ public class TestCases extends ExcelDataProvider{ // Lets us read the data
                 driver.manage().window().maximize();
         }
 
-        @AfterTest
-        public void endTest() {
-                driver.close();
-                driver.quit();
+        // @AfterTest
+        // public void endTest() {
+        //         driver.close();
+        //         driver.quit();
 
-        }
+        // }
 }
